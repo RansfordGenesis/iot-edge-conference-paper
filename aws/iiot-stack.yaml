@@ -1,0 +1,514 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+  IIoT Hybrid Cloud-Edge Research Stack
+  Deploys: IAM roles, AWS IoT Core, IoT Greengrass v2 (on EC2),
+  S3 data bucket, IoT rules engine, and CloudWatch monitoring dashboard.
+  Conference Paper - Group 2 (Appiah Boadu | Kyei Baafi | Kofi Koranteng)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# PARAMETERS
+# ─────────────────────────────────────────────────────────────────────────────
+
+Parameters:
+
+  ProjectName:
+    Type: String
+    Default: iiot-edge-research
+    Description: Prefix used for all resource names and tags.
+
+  GreengrassInstanceType:
+    Type: String
+    Default: t3.small
+    AllowedValues: [t3.micro, t3.small, t3.medium]
+    Description: EC2 instance type for the Greengrass edge gateway.
+
+  KeyPairName:
+    Type: String
+    Default: ''
+    Description: >
+      (Optional) EC2 Key Pair name for SSH. Leave blank to use
+      SSM Session Manager instead (recommended — no open SSH port needed).
+
+# ─────────────────────────────────────────────────────────────────────────────
+# CONDITIONS
+# ─────────────────────────────────────────────────────────────────────────────
+
+Conditions:
+  HasKeyPair: !Not [!Equals [!Ref KeyPairName, '']]
+
+# ─────────────────────────────────────────────────────────────────────────────
+# RESOURCES
+# ─────────────────────────────────────────────────────────────────────────────
+
+Resources:
+
+  # ── S3 DATA BUCKET ──────────────────────────────────────────────────────────
+  # Created first so the IAM policies can reference its ARN.
+
+  IIoTDataBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub 'iiot-edge-${AWS::AccountId}-${AWS::Region}'
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      LifecycleConfiguration:
+        Rules:
+          - Id: ExpireAfter90Days
+            Status: Enabled
+            ExpirationInDays: 90
+      Tags:
+        - Key: Project
+          Value: !Ref ProjectName
+
+  # ── IAM: GREENGRASS TOKEN EXCHANGE ROLE ─────────────────────────────────────
+  # Greengrass uses this role (via IoT credentials) to access S3, CloudWatch,
+  # and other AWS services from the edge. This is the TES (Token Exchange Service) role.
+
+  GreengrassTokenExchangeRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub '${ProjectName}-GreengrassTokenExchangeRole'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: credentials.iot.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: GreengrassTESPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                  - logs:DescribeLogStreams
+                Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:*'
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:ListBucket
+                Resource:
+                  - !GetAtt IIoTDataBucket.Arn
+                  - !Sub '${IIoTDataBucket.Arn}/*'
+              - Effect: Allow
+                Action:
+                  - cloudwatch:PutMetricData
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - iot:DescribeCertificate
+                  - iot:Connect
+                  - iot:Publish
+                  - iot:Subscribe
+                  - iot:Receive
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - greengrass:GetComponentVersionArtifact
+                  - greengrass:ResolveComponentCandidates
+                  - greengrass:GetDeploymentConfiguration
+                  - greengrass:ListThingGroupsForCoreDevice
+                  - greengrass:UpdateCoreDeviceConnectivityInfo
+                  - greengrass:PutCertificateAuthorities
+                  - greengrass:VerifyClientDeviceIoTCertificateAssociation
+                Resource: '*'
+      Tags:
+        - Key: Project
+          Value: !Ref ProjectName
+
+  # Role alias — lets Greengrass exchange its IoT certificate for AWS credentials
+  GreengrassTESRoleAlias:
+    Type: AWS::IoT::RoleAlias
+    Properties:
+      RoleAlias: !Sub '${ProjectName}-GreengrassCoreTokenExchangeRoleAlias'
+      RoleArn: !GetAtt GreengrassTokenExchangeRole.Arn
+      CredentialDurationSeconds: 3600
+
+  # ── IAM: EC2 INSTANCE ROLE ──────────────────────────────────────────────────
+  # The EC2 instance running Greengrass needs this to call IoT APIs during
+  # the auto-provisioning step (--provision true).
+
+  GreengrassEC2Role:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub '${ProjectName}-GreengrassEC2Role'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+      Policies:
+        - PolicyName: GreengrassProvisioningPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - iot:AddThingToThingGroup
+                  - iot:AttachPolicy
+                  - iot:AttachThingPrincipal
+                  - iot:CreateKeysAndCertificate
+                  - iot:CreatePolicy
+                  - iot:CreateRoleAlias
+                  - iot:CreateThing
+                  - iot:CreateThingGroup
+                  - iot:DescribeEndpoint
+                  - iot:DescribeRoleAlias
+                  - iot:DescribeThing
+                  - iot:DescribeThingGroup
+                  - iot:GetPolicy
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - greengrass:CreateDeployment
+                  - greengrass:GetDeployment
+                  - greengrass:ListDeployments
+                  - greengrass:ListComponents
+                  - greengrass:DescribeComponent
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - iam:GetRole
+                  - iam:PassRole
+                  - iam:CreateRoleAlias
+                  - iam:GetPolicy
+                  - iam:CreatePolicy
+                  - iam:AttachRolePolicy
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:ListBucket
+                Resource:
+                  - !GetAtt IIoTDataBucket.Arn
+                  - !Sub '${IIoTDataBucket.Arn}/*'
+      Tags:
+        - Key: Project
+          Value: !Ref ProjectName
+
+  GreengrassEC2InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      InstanceProfileName: !Sub '${ProjectName}-GreengrassEC2InstanceProfile'
+      Roles:
+        - !Ref GreengrassEC2Role
+
+  # ── IAM: IOT RULES ROLE ─────────────────────────────────────────────────────
+  # Allows IoT Core rules engine to write to S3 and CloudWatch.
+
+  IoTRulesRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub '${ProjectName}-IoTRulesRole'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: iot.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: IoTRulesPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                Resource: !Sub '${IIoTDataBucket.Arn}/*'
+              - Effect: Allow
+                Action:
+                  - cloudwatch:PutMetricData
+                Resource: '*'
+      Tags:
+        - Key: Project
+          Value: !Ref ProjectName
+
+  # ── AWS IOT CORE ─────────────────────────────────────────────────────────────
+
+  EdgeGatewayThing:
+    Type: AWS::IoT::Thing
+    Properties:
+      ThingName: iiot-edge-gateway-01
+      AttributePayload:
+        Attributes:
+          Project: !Ref ProjectName
+          Role: EdgeGateway
+
+  ManufacturingFloorThingGroup:
+    Type: AWS::IoT::ThingGroup
+    Properties:
+      ThingGroupName: ManufacturingFloorEdgeDevices
+      ThingGroupProperties:
+        ThingGroupDescription: Greengrass core devices for IIoT manufacturing PdM research
+
+  GreengrassEdgePolicy:
+    Type: AWS::IoT::Policy
+    Properties:
+      PolicyName: !Sub '${ProjectName}-GreengrassEdgePolicy'
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - iot:Connect
+              - iot:Publish
+              - iot:Subscribe
+              - iot:Receive
+              - greengrass:*
+            Resource: '*'
+
+  # ── IOT TOPIC RULES ──────────────────────────────────────────────────────────
+
+  EdgeDataToS3Rule:
+    Type: AWS::IoT::TopicRule
+    Properties:
+      RuleName: EdgeDataToS3
+      TopicRulePayload:
+        Sql: "SELECT * FROM 'iiot/edge/+/telemetry'"
+        Description: Archive all edge device telemetry to S3
+        Actions:
+          - S3:
+              BucketName: !Ref IIoTDataBucket
+              Key: "${topic()}/${timestamp()}.json"
+              RoleArn: !GetAtt IoTRulesRole.Arn
+        RuleDisabled: false
+
+  AnomalyAlertsToCloudWatchRule:
+    Type: AWS::IoT::TopicRule
+    Properties:
+      RuleName: AnomalyAlertsToCloudWatch
+      TopicRulePayload:
+        Sql: "SELECT * FROM 'iiot/edge/+/alerts'"
+        Description: Push anomaly alert counts to CloudWatch
+        Actions:
+          - CloudwatchMetric:
+              MetricName: AnomalyCount
+              MetricNamespace: IIoT/EdgeAlerts
+              MetricValue: '1'
+              MetricUnit: Count
+              RoleArn: !GetAtt IoTRulesRole.Arn
+        RuleDisabled: false
+
+  # ── CLOUDWATCH DASHBOARD ─────────────────────────────────────────────────────
+
+  MonitoringDashboard:
+    Type: AWS::CloudWatch::Dashboard
+    Properties:
+      DashboardName: IIoT-Edge-Monitoring
+      DashboardBody: !Sub |
+        {
+          "widgets": [
+            {
+              "type": "metric",
+              "x": 0, "y": 0, "width": 12, "height": 6,
+              "properties": {
+                "title": "Edge Inference Latency (ms)",
+                "metrics": [["IIoT/EdgeMetrics", "InferenceLatency", {"stat": "Average", "period": 60}]],
+                "view": "timeSeries",
+                "region": "${AWS::Region}",
+                "annotations": {"horizontal": [{"label": "100ms target", "value": 100}]}
+              }
+            },
+            {
+              "type": "metric",
+              "x": 12, "y": 0, "width": 12, "height": 6,
+              "properties": {
+                "title": "Bytes Published to IoT Core",
+                "metrics": [["AWS/IoT", "PublishIn.Success", "Protocol", "MQTT", {"stat": "Sum", "period": 60}]],
+                "view": "timeSeries",
+                "region": "${AWS::Region}"
+              }
+            },
+            {
+              "type": "metric",
+              "x": 0, "y": 6, "width": 12, "height": 6,
+              "properties": {
+                "title": "Anomaly Alerts (Edge Detections)",
+                "metrics": [["IIoT/EdgeAlerts", "AnomalyCount", {"stat": "Sum", "period": 60}]],
+                "view": "timeSeries",
+                "region": "${AWS::Region}"
+              }
+            },
+            {
+              "type": "metric",
+              "x": 12, "y": 6, "width": 12, "height": 6,
+              "properties": {
+                "title": "IoT Core — Total Messages Received",
+                "metrics": [["AWS/IoT", "PublishIn.Success", {"stat": "Sum", "period": 60}]],
+                "view": "timeSeries",
+                "region": "${AWS::Region}"
+              }
+            }
+          ]
+        }
+
+  # ── EC2: GREENGRASS EDGE GATEWAY ─────────────────────────────────────────────
+  # Amazon Linux 2 instance. UserData installs Java, downloads Greengrass,
+  # auto-provisions it against IoT Core, and deploys the Stream Manager component.
+
+  GreengrassSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Greengrass edge gateway - allow MQTT and optional SSH
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 8883
+          ToPort: 8883
+          CidrIp: '0.0.0.0/0'
+          Description: MQTT over TLS to AWS IoT Core
+      Tags:
+        - Key: Name
+          Value: !Sub '${ProjectName}-greengrass-sg'
+        - Key: Project
+          Value: !Ref ProjectName
+
+  GreengrassEC2Instance:
+    Type: AWS::EC2::Instance
+    DependsOn:
+      - GreengrassTESRoleAlias
+      - EdgeGatewayThing
+      - ManufacturingFloorThingGroup
+      - GreengrassEC2InstanceProfile
+    Properties:
+      InstanceType: !Ref GreengrassInstanceType
+      ImageId: '{{resolve:ssm:/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2}}'
+      IamInstanceProfile: !Ref GreengrassEC2InstanceProfile
+      SecurityGroupIds:
+        - !GetAtt GreengrassSecurityGroup.GroupId
+      KeyName: !If [HasKeyPair, !Ref KeyPairName, !Ref 'AWS::NoValue']
+      Tags:
+        - Key: Name
+          Value: !Sub '${ProjectName}-greengrass-gateway'
+        - Key: Project
+          Value: !Ref ProjectName
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          set -e
+          exec > >(tee /var/log/greengrass-install.log) 2>&1
+          echo "======================================"
+          echo " IIoT Greengrass v2 Install — START"
+          echo "======================================"
+
+          # ── Install Java 11 ──
+          echo "[1/5] Installing Java 11..."
+          amazon-linux-extras enable java-openjdk11 -y
+          yum install -y java-11-openjdk unzip curl
+
+          # ── Download Greengrass nucleus ──
+          echo "[2/5] Downloading Greengrass nucleus..."
+          curl -s https://d2s8p88vqu9w66.cloudfront.net/releases/greengrass-nucleus-latest.zip \
+            -o /tmp/greengrass.zip
+          unzip -q /tmp/greengrass.zip -d /tmp/GreengrassInstaller
+
+          # ── Allow Greengrass (root) to run components as ggc_user ──
+          echo "[3/5] Configuring sudoers for ggc_user..."
+          echo 'root    ALL=(ggc_user:ggc_group) NOPASSWD: ALL' > /etc/sudoers.d/greengrass
+          chmod 0440 /etc/sudoers.d/greengrass
+
+          # ── Install and provision Greengrass ──
+          echo "[4/6] Installing and provisioning Greengrass v2..."
+          java -Droot="/greengrass/v2" \
+            -Dlog.store=FILE \
+            -jar /tmp/GreengrassInstaller/lib/Greengrass.jar \
+            --aws-region ${AWS::Region} \
+            --thing-name iiot-edge-gateway-01 \
+            --thing-group-name ManufacturingFloorEdgeDevices \
+            --tes-role-name ${ProjectName}-GreengrassTokenExchangeRole \
+            --tes-role-alias-name ${ProjectName}-GreengrassCoreTokenExchangeRoleAlias \
+            --component-default-user ggc_user:ggc_group \
+            --provision true \
+            --setup-system-service true \
+            --deploy-dev-tools true
+
+          # ── Wait for Greengrass service to start ──
+          echo "[5/6] Waiting for Greengrass service..."
+          sleep 15
+          systemctl status greengrass --no-pager
+
+          # ── Deploy Stream Manager component ──
+          echo "[6/6] Deploying Stream Manager..."
+          THING_ARN=$(aws iot describe-thing \
+            --thing-name iiot-edge-gateway-01 \
+            --region ${AWS::Region} \
+            --query 'thingArn' --output text)
+
+          aws greengrassv2 create-deployment \
+            --region ${AWS::Region} \
+            --target-arn "$THING_ARN" \
+            --deployment-name "IIoTResearchDeployment-v1" \
+            --components '{
+              "aws.greengrass.StreamManager": {
+                "componentVersion": "2.3.0"
+              },
+              "aws.greengrass.Cli": {
+                "componentVersion": "2.17.0"
+              }
+            }'
+
+          echo "======================================"
+          echo " IIoT Greengrass v2 Install — DONE"
+          echo "======================================"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# OUTPUTS
+# ─────────────────────────────────────────────────────────────────────────────
+
+Outputs:
+
+  GatewayInstanceId:
+    Description: >
+      EC2 Instance ID of the Greengrass gateway.
+      Connect via SSM: aws ssm start-session --target <InstanceId>
+    Value: !Ref GreengrassEC2Instance
+
+  GatewayPublicIP:
+    Description: Public IP of the Greengrass gateway EC2 instance
+    Value: !GetAtt GreengrassEC2Instance.PublicIp
+
+  DataBucketName:
+    Description: S3 bucket for archived device telemetry
+    Value: !Ref IIoTDataBucket
+
+  CloudWatchDashboardURL:
+    Description: CloudWatch monitoring dashboard
+    Value: !Sub >-
+      https://${AWS::Region}.console.aws.amazon.com/cloudwatch/home
+      ?region=${AWS::Region}#dashboards:name=IIoT-Edge-Monitoring
+
+  ThingName:
+    Description: IoT Core Thing name for the Greengrass core device
+    Value: !Ref EdgeGatewayThing
+
+  ThingGroupName:
+    Description: IoT Core Thing Group name
+    Value: !Ref ManufacturingFloorThingGroup
+
+  TESRoleAlias:
+    Description: Token Exchange Service role alias name (used in Greengrass config)
+    Value: !Sub '${ProjectName}-GreengrassCoreTokenExchangeRoleAlias'
+
+  InstallLogNote:
+    Description: >
+      To check the Greengrass install log on the EC2 instance run:
+      sudo cat /var/log/greengrass-install.log
+    Value: "sudo cat /var/log/greengrass-install.log"
+
+  IoTEndpointNote:
+    Description: >
+      Get your IoT Core endpoint (needed for device SDK connections) by running:
+      aws iot describe-endpoint --endpoint-type iot:Data-ATS --query endpointAddress --output text
+    Value: !Sub "aws iot describe-endpoint --endpoint-type iot:Data-ATS --region ${AWS::Region} --query endpointAddress --output text"

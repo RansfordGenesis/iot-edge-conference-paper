@@ -1,0 +1,503 @@
+﻿Document Sections
+Investigate hybrid cloud-edge architectures for low-latency data processing in industrial IoT applications, such as predictive maintenance in manufacturing, emphasizing reduced bandwidth usage, improved resilience, and seamless deployment of ML inference at the edge.
+Literature Review
+Predictive Maintenance
+Based on the research papers provided under predictive maintenance, here are the summaries for each:
+Self-Evolving Multi-Agent Network for Industrial IoT Predictive Maintenance
+* Elevator Pitch: The authors are investigating how to create a predictive maintenance system that can adapt to changing industrial conditions in real-time without the high memory and latency costs of large, monolithic AI models.
+* The Thesis: A self-evolving hierarchical multi-agent system (SEMAS) that distributes specialized agents across Edge, Fog, and Cloud tiers—using Reinforcement Learning to optimize policies—can provide real-time, explainable, and resource-efficient anomaly detection.
+* The Bottom Line: SEMAS achieves superior accuracy and dramatically lower latency (sub-millisecond) compared to rule-based systems, demonstrating that resource-aware, self-evolving coordination is essential for production-ready IIoT.
+A dissimilarity-based approach to predictive maintenance with application to HVAC systems
+* Elevator Pitch: The paper addresses the difficulty of handcrafting features for specific sensors and the tendency for absolute sensor values to be skewed by seasonal trends or individual appliance biases.
+* The Thesis: By monitoring a "cohort" of homogeneous appliances and analyzing the concurrent mutual differences (dissimilarities) in their behaviors, a system can detect incipient faults more accurately than by monitoring individual units in isolation.
+* The Bottom Line: This dissimilarity-based approach is sensor-agnostic and robust to environmental factors, capable of predicting specific HVAC faults with high accuracy up to one week in advance.
+Edge-Cloud Synergy for AI-Enhanced Sensor Network Data: A Real-Time Predictive Maintenance Framework
+* Elevator Pitch: The authors examine the high latency, energy consumption, and bandwidth bottlenecks that occur when sensor networks rely solely on cloud computing for real-time predictive maintenance.
+* The Thesis: A synergistic framework that uses lightweight K-Nearest Neighbors (KNN) models at the edge for immediate anomaly detection and deep LSTM models in the cloud for in-depth failure prediction will optimize task distribution.
+* The Bottom Line: The hybrid approach significantly outperforms cloud-only solutions, achieving a 35% reduction in latency, a 28% decrease in energy consumption, and a 60% reduction in bandwidth usage.
+Enhancing failure prediction in nuclear industry: Hybridization of knowledge- and data-driven techniques
+* Elevator Pitch: This study addresses the limitations of purely data-driven machine learning models, which often lack the interpretability and robustness required for the high-stakes, complex environments of the nuclear industry.
+* The Thesis: Integrating domain-specific expertise and expert rules (knowledge engineering) with data-driven machine learning models creates a hybrid system that is more accurate and reliable than either method alone.
+* The Bottom Line: Hybridization dramatically improves performance, increasing the failure prediction F1 score from 56.36% to 93.12% and extending the prediction horizon from 3 hours to 24 hours.
+An edge-cloud IIoT framework for predictive maintenance in manufacturing systems
+* Elevator Pitch: The authors investigate the persistent challenges of data sparsity (limited real-time fault data) and the need for reliable computing architectures in real-time manufacturing environments.
+* The Thesis: An end-to-end framework (IntelliPdM) that utilizes a synthetic data generation module (SMARTHome) to fill data gaps and an edge-cloud platform for processing can deliver accurate and scalable diagnostics.
+* The Bottom Line: IntelliPdM proved its effectiveness in on-site implementations, achieving 93-95% accuracy and delivering a 10x return on investment by significantly reducing breakdowns and maintenance costs.
+Edge Computing-Assisted IoT Framework With an Autoencoder for Fault Detection in Manufacturing Predictive Maintenance
+* Elevator Pitch: The paper tackles the problem of "huge computation pressure" and latency issues when centralized cloud systems attempt to process high volumes of multidimensional sensor data from manufacturing plants.
+* The Thesis: Implementing a distributed stacked sparse autoencoder at the edge layer allows for real-time, no-delay fault detection while reducing the volume of data that must be transmitted to the cloud.
+* The Bottom Line: The proposed framework enables the detection of major equipment failures significantly in advance (e.g., 8 days for a syngas compressor) while drastically reducing storage and server costs.
+Edge–Cloud Integrated Framework for Real-Time Predictive Maintenance in Cyber–Physical Systems
+* Elevator Pitch: The core problem is that traditional cloud-based predictive maintenance (PdM) suffers from high latency, while edge-only solutions are often too limited by computational resources for deep analytics.
+* The Thesis: Integrating edge and cloud computing provides a scalable framework that allows for rapid anomaly detection at the source (Edge) while utilizing the cloud for historical trend analysis and model updates.
+* The Bottom Line: A hybrid edge–cloud architecture is the most effective way to ensure operational efficiency and reliability in cyber-physical systems, allowing industries to transition from reactive to proactive maintenance.
+Analyzing the impact of edge, fog and cloud computing on predictive maintenance in the Industrial Internet of Things
+* Elevator Pitch: The authors explore the impact of integrating multi-level computing (edge, fog, and cloud) to overcome the challenges of big data, legacy systems, and network security in industrial predictive maintenance.
+* The Thesis: A multilayer framework utilizing the MQTT protocol for efficient data transfer, coupled with machine learning, is necessary to provide the low-latency processing and advanced analytics required for modern Industry 5.0.
+* The Bottom Line: Multi-layered computing paradigms are essential for balancing the trade-offs between processing speed and the depth of analytics, with research in this field growing rapidly to meet global industrial demands.
+INTEGRATING FEDERATED LEARNING AND EDGE COMPUTING FOR PRIVACY-PRESERVING AND REAL-TIME PREDICTIVE MAINTENANCE IN INDUSTRIAL IOT SYSTEMS
+* Elevator Pitch: The authors are investigating the critical conflict between the need for data-intensive machine learning in PdM and the privacy risks/bandwidth overhead associated with sending sensitive industrial data to central servers.
+* The Thesis: Integrating Edge Computing with Federated Learning (FL) allows for decentralized model training where only encrypted model parameters—not raw data—are exchanged, preserving privacy and reducing network load.
+* The Bottom Line: This privacy-preserving framework reduces inference latency by up to 60% with less than 1% deviation in accuracy from centralized models, offering a robust pathway for secure digital transformation.
+Comparative Analysis & Literature Review
+The collection reveals five major pillars of similarity that form a unified architectural trend in the field.
+1. The Shift from Centralized to Hierarchical Architectures
+The most significant similarity across these papers is the rejection of cloud-only processing.
+* Edge-Cloud Integration: Titles like "Edge-Cloud Synergy for AI-Enhanced Sensor Network Data" and "Edge–Cloud Integrated Framework for Real-Time Predictive Maintenance in Cyber–Physical Systems" explicitly argue that the cloud alone is too slow for industrial safety.
+* The Three-Tier Model: Papers such as "Self-Evolving Multi-Agent Network for Industrial IoT Predictive Maintenance" and "Analyzing the impact of edge, fog and cloud computing" promote a refined three-layer approach (Edge, Fog, and Cloud) to balance local "reflexes" (Edge) with global "intelligence" (Cloud).
+2. Algorithmic Convergence: Time-Series & Deep Learning
+The papers show a high degree of similarity in their choice of "brains" for the maintenance systems:
+* LSTM Dominance: Long Short-Term Memory (LSTM) networks are the preferred choice for temporal failure prediction in "Edge-Cloud Synergy," "An edge-cloud IIoT framework for predictive maintenance," and "INTEGRATING FEDERATED LEARNING AND EDGE COMPUTING."
+* Anomaly Detection via Autoencoders & KNN: While LSTMs predict the future, unsupervised models like Autoencoders ("Edge Computing-Assisted IoT Framework With an Autoencoder") and K-Nearest Neighbors ("Edge-Cloud Synergy") are the standard for detecting current anomalies at the Edge.
+3. Solving the "Small Data" and "Domain Knowledge" Problem
+A shared concern is that data is often scarce or lacks context.
+* Knowledge Hybridization: "Enhancing failure prediction in nuclear industry" argues that data-driven models fail without domain expertise. This is echoed by the Multi-Agent approach in the "Self-Evolving Multi-Agent Network" paper, which uses agents to incorporate expert rules.
+* Synthetic Data: Because real-world failures are rare, "An edge-cloud IIoT framework for predictive maintenance" introduces SMARTHome, a framework to generate synthetic failure data, ensuring the AI can recognize a crash it has never seen before.
+4. Critical Performance Benchmarks
+All papers unify around three non-negotiable metrics:
+* Latency: The "100ms" rule is a common thread; any detection taking longer than this is considered a failure for real-time industrial safety.
+* F1-Score: Because industrial datasets are "imbalanced" (thousands of hours of normal data vs. minutes of failure data), these papers prioritize the F1-score over simple accuracy.
+* Privacy: Especially in "INTEGRATING FEDERATED LEARNING AND EDGE COMPUTING," there is an emerging emphasis on ensuring data never leaves the factory floor to protect proprietary trade secrets.
+5. Sector-Specific Validation
+The papers provide a unified view by testing these similar theories across diverse high-stakes sectors:
+* Manufacturing: (Yu et al.; Somu & Dasappa)
+* Nuclear Energy: (Saley et al.)
+* HVAC Systems: (Satta et al.)
+* Cyber-Physical Systems: (Rehman & Naz)
+Unified View Summary
+When viewed together, these papers describe an evolution from Static/Centralized maintenance to Adaptive/Hierarchical maintenance. A modern system, according to this collection, must be:
+1. Decentralized: Processing at the Edge to save time.
+2. Hybrid: Using both sensor data and human expert rules.
+3. Privacy-Preserving: Using techniques like Federated Learning so companies can collaborate without sharing raw data.
+4. Self-Evolving: Using Reinforcement Learning to update its own thresholds as machinery ages.
+Citations
+Paper 1 Saleh, Rebin, et al. "Self-Evolving Multi-Agent Network for Industrial IoT Predictive Maintenance." arXiv, 17 Feb. 2026, https://github.com/HySonLab/AgentIoT.
+Paper 2 Satta, Riccardo, et al. "A Dissimilarity-Based Approach to Predictive Maintenance with Application to HVAC Systems." CGnal Research Papers Series, 2026.
+Paper 3 Sathupadi, Kaushik, et al. "Edge-Cloud Synergy for AI-Enhanced Sensor Network Data: A Real-Time Predictive Maintenance Framework." Sensors, vol. 24, no. 7918, 11 Dec. 2024, https://doi.org/10.3390/s24247918.
+Paper 4 Saley, Amaratou Mahamadou, et al. "Enhancing Failure Prediction in Nuclear Industry: Hybridization of Knowledge- and Data-Driven Techniques." Computers & Industrial Engineering, vol. 209, 2025, https://doi.org/10.1016/j.cie.2025.111387.
+Paper 5 Somu, Nivethitha, and Nirupam Sannagowdara Dasappa. "An Edge-Cloud IIoT Framework for Predictive Maintenance in Manufacturing Systems." SSRN, 2024, https://ssrn.com/abstract=4932094.
+Paper 6 Yu, Wenjin, et al. "Edge Computing-Assisted IoT Framework with an Autoencoder for Fault Detection in Manufacturing Predictive Maintenance." IEEE Transactions on Industrial Informatics, vol. 19, no. 4, Apr. 2023, pp. 5701-5710, https://doi.org/10.1109/TII.2022.3178732.
+Paper 7 Rehman, Awais, and Gul Naz. "Edge–Cloud Integrated Framework for Real-Time Predictive Maintenance in Cyber–Physical Systems." International Research Journal of Advanced Science, vol. 5, no. 1, 2024, pp. 22-32.
+Paper 8 Kapoor, Dimple, et al. "Analyzing the Impact of Edge, Fog and Cloud Computing on Predictive Maintenance in the Industrial Internet of Things." Discover Computing, vol. 28, no. 207, 2025, https://doi.org/10.1007/s10791-025-09653-8.
+Paper 9 Vejendla, Kiran Kumar. INTEGRATING FEDERATED LEARNING AND EDGE COMPUTING FOR PRIVACY-PRESERVING AND REAL-TIME PREDICTIVE MAINTENANCE IN INDUSTRIAL IOT SYSTEMS. Dissertation, City University of Seattle, 2026.
+Actual Bibtex
+@article{network,
+  author = {Khanh Pham Dinh Rebin Saleh and Truong-Son Hy Balázs Villányi},
+  title = {{Self-Evolving Multi-Agent Network for Industrial IoT Predictive Maintenance}},
+  year = {n.d.},
+  url = {https://arxiv.org/pdf/2602.16738v1.pdf},
+  journal = {{IEEE TRANSACTIONS ON INDUSTRIAL INFORMATICS}}
+}
+
+
+@article{a_approach,
+  author = {Stefano Cavallari Riccardo Satta and Daniele Grasselli Eraldo Pomponi and Carlo Annis Davide Picheo},
+  title = {{A dissimilarity-based approach to predictive maintenance with application to HVAC systems}},
+  year = {n.d.},
+  url = {https://arxiv.org/pdf/1701.03633v1.pdf},
+  journal = {{CGnal Research Papers Series}}
+}
+
+
+@article{10_3390_s24247918,
+  author = {Sandesh Achar Kaushik Sathupadi and Nuruzzaman Faruqui Shinoy Vengaramkode Bhaskaran and Jia Uddin M. Abdullah-Al-Wadud},
+  title = {{Edge-Cloud Synergy for AI-Enhanced Sensor Network Data: A Real-Time Predictive Maintenance Framework}},
+  year = {2024},
+  doi = {10.3390/s24247918},
+  journal = {{Sensors}}
+}
+
+
+@article{10_1016_j_cie_2025_111387,
+  author = {Amaratou Mahamadou Saley and Thierry Moyaux and Aïcha Sekhari and Vincent Cheutet and Jean-Baptiste Danielou},
+  title = {{Enhancing failure prediction in nuclear industry: Hybridization of knowledge- and data-driven techniques}},
+  year = {2025},
+  doi = {10.1016/j.cie.2025.111387},
+  url = {https://arxiv.org/pdf/2511.11604v1.pdf},
+  journal = {{Computers & Industrial Engineering}}
+}
+
+
+@article{an_iiot,
+  author = {Nirupam Sannagowdara Dasappa Nivethitha Somu},
+  title = {{An edge-cloud IIoT framework for predictive maintenance in manufacturing systems}},
+  year = {n.d.},
+}
+
+
+@article{10_1109_TII_2022_3178732,
+  author = {Yuehua Liu Wenjin Yu and Wenny Rahayu Tharam Dillon},
+  title = {{Edge Computing-Assisted IoT Framework With an Autoencoder for Fault Detection in Manufacturing Predictive Maintenance}},
+  year = {2022},
+  doi = {10.1109/TII.2022.3178732},
+  journal = {{IEEE Transactions on Industrial Informatics}}
+}
+
+
+@article{integrat_framewor,
+  author = {Gul Naz Awais Rehman},
+  title = {{Edge–Cloud Integrated Framework for Real-Time Predictive Maintenance in Cyber–Physical Systems}},
+  year = {2024},
+  journal = {{International Research Journal of Applied Sciences (www.irjas.com)}}
+}
+
+
+@article{10_1007_s10791-025-09653-8,
+  author = {Dimple Kapoor and Deepali Gupta and Mudita Uppal},
+  title = {{Analyzing the impact of edge, fog and cloud computing on predictive maintenance in the Industrial Internet of Things}},
+  year = {2025},
+  doi = {10.1007/s10791-025-09653-8},
+  journal = {{Discover Computing}}
+}
+
+
+@article{integrat_federate_learning,
+  author = {Kiran Kumar Vejendla},
+  title = {{INTEGRATING FEDERATED LEARNING AND EDGE COMPUTING FOR PRIVACY-PRESERVING AND REAL-TIME PREDICTIVE MAINTENANCE IN INDUSTRIAL IOT SYSTEMS}},
+  year = {2026},
+}
+
+
+Architectures
+This collection of research papers investigates the evolution of Industrial Internet of Things (IIoT) architectures, focusing on the shift from centralized cloud systems to decentralized, multi-tier frameworks involving Edge and Fog computing.
+Edge, Fog and Cloud Computing framework for flexible production
+* Elevator Pitch: The authors investigate how integrating Edge, Fog, and Cloud computing can mitigate latency and data loss issues that currently hinder flexible manufacturing and mass customization.
+* Thesis: They argue that a three-layer architectural framework is necessary to balance local real-time responsiveness with centralized deep-data analysis for predictive maintenance and production resilience.
+* Bottom Line: Effectively integrating these three layers allows Industry 3.0 plants to transition into Industry 4.0 environments that are highly adaptable to demand fluctuations.
+An Analysis of HPC and Edge Architectures in the Cloud
+* Elevator Pitch: This paper examines the specific design patterns and AWS service choices used in real-world High-Performance Computing (HPC) and Edge architectures to identify industry trends.
+* Thesis: The authors hypothesize that HPC and Edge architectures possess unique service interplays and higher complexities than standard web applications, requiring specialized storage and compute configurations.
+* Bottom Line: Despite the availability of high-performance options, S3 remains the dominant storage choice across architectures, and Edge designs rely more heavily on third-party services than AWS-native ones.
+ECAvg: An Edge-Cloud Collaborative Learning Approach using Averaged Weights
+* Elevator Pitch: The authors explore a method to overcome the resource constraints and data distribution shifts of edge devices by using a collaborative model-training approach.
+* Thesis: They propose that pre-training models on edge devices and fine-tuning them in the cloud using averaged weights (ECAvg) optimizes performance for deep learning tasks.
+* Bottom Line: This collaborative approach significantly boosts accuracy for complex deep neural networks but can result in "negative transfer" (decreased performance) when applied to simple hidden-layer architectures.
+REAL-TIME DATA PROCESSING IN CLOUD AND EDGE COMPUTING
+* Elevator Pitch: This article investigates the necessity of cloud-edge integration to meet the sub-millisecond response times required by modern data-intensive industries.
+* Thesis: The author argues that a symbiotic relationship between cloud and edge computing is the only viable framework for optimizing resource utilization while reducing end-to-end latency by up to 40%.
+* Bottom Line: Moving processing closer to the data source is no longer a luxury but a critical business necessity for mission-critical applications like autonomous driving and healthcare.
+A Survey on the Applications of Cloud Computing in the Industrial Internet of Things
+* Elevator Pitch: The authors conduct a comprehensive survey of how cloud computing service models and architectures enable intelligent, scalable IIoT ecosystems.
+* Thesis: They argue that the convergence of cloud computing with AI, 5G, and blockchain is the primary driver for achieving operational excellence and overcoming current security and latency barriers.
+* Bottom Line: The future of industrial innovation rests on the transition from centralized models to hybrid, AI-driven adaptive services that ensure data sovereignty and real-time intelligence.
+JANUS: Benchmarking Commercial and Open-Source Cloud and Edge Platforms...
+* Elevator Pitch: The authors profile the performance and cost implications of running compute-light and compute-intensive IoT workloads across various commercial and open-source platforms.
+* Thesis: They hypothesize that there is a significant trade-off between the speed of proprietary cloud "black box" services and the cost-efficiency and tunability of open-source edge solutions.
+* Bottom Line: AWS IoT Greengrass is superior for lightweight anomaly detection, whereas open-source algorithms on cloud VMs are significantly cheaper—though slower—than proprietary vision APIs for intensive tasks.
+A Microservices-Based Hybrid Cloud-Edge Architecture for Real-Time IIoT Analytics
+* Elevator Pitch: The author investigates how a microservices-driven hybrid architecture can solve the data integration and vendor lock-in challenges of real-time IIoT analytics.
+* Thesis: He proposes a containerized three-layer architecture (Edge, Cloud, Control Plane) to enable modular deployments that optimize predictive accuracy for machine health.
+* Bottom Line: Implementing microservices in a hybrid cloud-edge context can reduce operating expenses and cut latency by 30% while dramatically improving the accuracy of Remaining Useful Life (RUL) predictions.
+Poster Abstract: Combining edge and cloud computing for mobility analytics
+* Elevator Pitch: This study investigates how to partition analytical tasks between edge and cloud layers to prevent data bottlenecks in transit fleet management systems.
+* Thesis: The authors argue that lightweight data cleaning and contextualization should happen at the edge, while heavy graph-based processing should be reserved for the cloud.
+* Bottom Line: A distributed architecture enables meaningful mobility analytics on massive transit data streams without overwhelming cloud infrastructure.
+Edge Intelligence for Data Handling and Predictive Maintenance in IIOT
+* Elevator Pitch: The authors examine how "Edge Intelligence"—moving machine learning and data reduction closer to sensors—impacts the cost and speed of predictive maintenance.
+* Thesis: They argue that utilizing sampling, compression, and fusion at the edge is essential to balance the accuracy of predictive models with the high cost of data transmission.
+* Bottom Line: A successful IIoT predictive maintenance strategy requires an architecture that uses network-level information to dynamically adjust data reduction at the edge.
+Enabling Industrial Internet of Things by Leveraging Distributed Edge-to-Cloud Computing...
+* Elevator Pitch: This paper surveys current IoT platforms to determine how well they meet the rigorous scalability, interoperability, and security requirements of distributed IIoT.
+* Thesis: The authors hypothesize that while current platforms (ThingsBoard, Azure IoT, Eclipse Ditto) offer robust features, they still face significant gaps in semantic interoperability and resilient failover mechanisms.
+* Bottom Line: Advancing IIoT requires moving beyond cloud-centricity toward distributed intelligence, necessitating further research into standardized communication protocols and self-healing architectures.
+Improving an IoT-Based Motor Health Predictive Maintenance System Through Edge-Cloud Computing
+* Elevator Pitch: The authors investigate whether adding edge computing to a pure cloud predictive maintenance system consistently improves performance.
+* Thesis: They argue that the benefits of edge computing are conditional, depending entirely on the hardware specifications of the edge device and the network delay to the cloud.
+* Bottom Line: If edge hardware is underpowered, it may actually be faster to incur network latency and use a high-speed cloud server rather than processing data locally.
+Ultra-Low Latency Cloud-Fog Computing for Industrial Internet of Things
+* Elevator Pitch: The authors investigate a load-balancing optimization method to achieve ultra-low latency in IIoT networks despite unreliable wireless links.
+* Thesis: They propose a cloud-fog integrated network using a "real-coded genetic algorithm for constrained optimization" (RCGA-CO) to optimize task reallocation.
+* Bottom Line: The proposed mechanism effectively reduces service response times and maintains reliability even when fog nodes are damaged or links fail.
+Literature Review and Comparative Analysis
+Thematic Similarities: The "Decentralization" Trend
+All twelve papers identify a core phenomenon: The Cloud Bottleneck. Whether discussing flexible production (Paper 1), motor health (Paper 11), or mobility (Paper 8), the consensus is that purely centralized cloud architectures are failing to meet the "real-time" requirements of modern industry due to latency, bandwidth costs, and security risks.
+Comparative Breakdown of Research Areas
+* Predictive Maintenance (PdM): Papers 1, 7, 9, and 11 form a core cluster. While Paper 11 focuses on the hardware constraints of PdM, Paper 7 provides the solution via microservices, and Paper 9 focuses on the data reduction algorithms necessary to make PdM cost-effective.
+* Architectural Optimization: Papers 3, 10, and 12 focus on the "logic" of the framework. Paper 3 uses collaborative weight averaging for AI, Paper 12 uses genetic algorithms for load balancing, and Paper 10 evaluates current software platforms (like Azure and ThingsBoard) to see if they can actually support these advanced logic models.
+* Benchmarking and Real-World Trends: Papers 2 and 6 provide empirical "reality checks." Paper 2 reveals that industry practice often favors simpler storage (S3) despite complex needs, while Paper 6 quantifies exactly how much money is saved by using open-source edge solutions versus proprietary cloud APIs.
+A Unified View
+To view these papers as a single body of work, one must see them as a Roadmap for Industry 4.0 Implementation:
+1. Identification: Acknowledge that the cloud alone is too slow (Papers 4, 5, 8).
+2. Architecture: Design a three-tier system (Edge/Fog/Cloud) using microservices for flexibility (Papers 1, 7, 10).
+3. Optimization: Use advanced algorithms to balance the load (Paper 12) and collaborative learning to keep AI models accurate (Paper 3).
+4. Feasibility: Perform a hardware-software audit to ensure the edge devices aren't slower than the cloud (Paper 11) and use data reduction to save on transmission costs (Paper 9).
+Citations (MLA)
+1. Briatore, Federico, and Mattia Braggio. "Edge, Fog and Cloud Computing Framework for Flexible Production." Procedia Computer Science, vol. 253, 2025, pp. 2206–2218, doi:10.1016/j.procs.2025.01.281.
+2. Santillan, Steven, and Cristina L. Abad. "An Analysis of HPC and Edge Architectures in the Cloud." arXiv pre-print, arXiv:2508.01494v1, 2 Aug. 2025.
+3. Mih, Atah Nuh, et al. "ECAvg: An Edge-Cloud Collaborative Learning Approach using Averaged Weights." arXiv pre-print, arXiv:2310.03823v1, 5 Oct. 2023.
+4. Mohammed, Abdul Hameed. "Real-Time Data Processing in Cloud and Edge Computing." International Journal of Computer Engineering and Technology (IJCET), vol. 15, no. 6, 2024, pp. 1940-1951, doi:10.34218/IJCET_15_06_166.
+5. Dritsas, Elias, and Maria Trigka. "A Survey on the Applications of Cloud Computing in the Industrial Internet of Things." Big Data and Cognitive Computing, vol. 9, no. 44, 2025, doi:10.3390/bdcc9020044.
+6. Shankar, Karthick, et al. "JANUS: Benchmarking Commercial and Open-Source Cloud and Edge Platforms for Object and Anomaly Detection Workloads." arXiv pre-print, arXiv:2012.04880v1, 9 Dec. 2020.
+7. Kompally, Venkata Srinivas. "A Microservices-Based Hybrid Cloud-Edge Architecture for Real-Time IIoT Analytics." Journal of Information Systems Engineering and Management, vol. 10, no. 16s, 2025.
+8. Maduako, Ikechukwu, et al. "Poster Abstract: Combining Edge and Cloud Computing for Mobility Analytics." People in Motion Lab, University of New Brunswick, 2017.
+9. Hafeez, Taimur, et al. "Edge Intelligence for Data Handling and Predictive Maintenance in IIOT." IEEE Access, vol. 9, 2021, pp. 49355-49371, doi:10.1109/ACCESS.2021.3069137.
+10. Jamil, Mohammad Newaj, et al. "Enabling Industrial Internet of Things by Leveraging Distributed Edge-to-Cloud Computing: Challenges and Opportunities." IEEE Access, vol. 12, 2024, pp. 127294-127308, doi:10.1109/ACCESS.2024.3454812.
+11. Lee, Kristine-Clair, et al. "Improving an IoT-Based Motor Health Predictive Maintenance System Through Edge-Cloud Computing." University of the Philippines Diliman, 2020.
+12. Shi, Chenhua, et al. "Ultra-Low Latency Cloud-Fog Computing for Industrial Internet of Things." Xidian University / IEEE, 2018.
+@article{10_1016_j_procs_2025_01_281,
+  author = {Mattia Braggio Federico Briatore},
+  title = {{Edge, Fog and Cloud Computing framework for flexible production}},
+  year = {2025},
+  doi = {10.1016/j.procs.2025.01.281},
+  journal = {{Procedia Computer Science}}
+}
+
+
+@article{an_analysis_of,
+  author = {Cristina L. Abad Steven Santillan},
+  title = {{An Analysis of HPC and Edge Architectures in the Cloud}},
+  year = {n.d.},
+}
+
+
+@article{arxiv_2310_03823,
+  author = {Hung Cao Atah Nuh Mih and Monica Wachowicz Asfia Kawnine},
+  title = {{ECAvg: An Edge-Cloud Collaborative Learning Approach using Averaged Weights}},
+  year = {n.d.},
+  eprint = {2310.03823},
+  archivePrefix = {arXiv},
+  url = {https://arxiv.org/pdf/2310.03823v1}
+}
+
+
+@article{10_34218_IJCET_15_06_166,
+  author = {Abdul Hameed Mohammed},
+  title = {{REAL-TIME DATA PROCESSING IN CLOUD AND EDGE COMPUTING}},
+  year = {2024},
+  doi = {10.34218/IJCET_15_06_166},
+  url = {https://iaeme.com/MasterAdmin/Journal_uploads/IJCET/VOLUME_15_ISSUE_6/IJCET_15_06_166.pdf},
+  journal = {{International Journal of Computer Engineering and Technology (IJCET)}}
+}
+
+
+@article{10_3390_bdcc9020044,
+  author = {Maria Trigka Elias Dritsas},
+  title = {{A Survey on the Applications of Cloud Computing in the Industrial Internet of Things}},
+  year = {2025},
+  doi = {10.3390/bdcc9020044},
+  journal = {{Big Data and Cognitive Computing}}
+}
+
+
+@article{arxiv_2012_04880,
+  author = {Karthick Shankar and Pengcheng Wang and Ran Xu and Ashraf Mahgoub and Somali Chaterji},
+  title = {{JANUS : Benchmarking Commercial and Open-Source Cloud and Edge Platforms for Object and Anomaly Detection Workloads}},
+  year = {n.d.},
+  eprint = {2012.04880},
+  archivePrefix = {arXiv},
+  url = {https://arxiv.org/pdf/2012.04880v1}
+}
+
+
+@article{a_hybrid,
+  author = {Venkata Srinivas Kompally},
+  title = {{A Microservices-Based Hybrid Cloud-Edge Architecture for Real-Time IIoT Analytics}},
+  year = {2025},
+  journal = {{Journal of Information Systems Engineering and Management}}
+}
+
+
+@article{poster_combinin,
+  author = {Hung Cao Ikechukwu Maduako and Monica Wachowicz Lilian Hernandez},
+  title = {{Poster Abstract: Combining edge and cloud computing for mobility analytics}},
+  year = {n.d.},
+}
+
+
+@article{10_1109_ACCESS_2021_3069137,
+  author = {Taimur Hafeez and Lina Xu and Gavin McArdle},
+  title = {{Edge Intelligence for Data Handling and Predictive Maintenance in IIOT}},
+  year = {2021},
+  doi = {10.1109/ACCESS.2021.3069137},
+  journal = {{IEEE Access}}
+}
+
+
+@article{10_1109_ACCESS_2024_3454812,
+  author = {Olov Schelén Mohammad Newaj Jamil and Karl Andersson Ahmed Afif Monrat},
+  title = {{Enabling Industrial Internet of Things by Leveraging Distributed Edge-to-Cloud Computing: Challenges and Opportunities}},
+  year = {2024},
+  doi = {10.1109/ACCESS.2024.3454812},
+  journal = {{IEEE Access}}
+}
+
+
+@article{improvin_an,
+  author = {Kristine-Clair Lee and Christian Villamera and Carlos Adrian Daroya and Paolo Samontanez and Wilson M. Tan},
+  title = {{Improving an IoT-Based Motor Health Predictive Maintenance System Through Edge-Cloud Computing}},
+  year = {n.d.},
+}
+
+
+@article{latency,
+  author = {Chenhua Shi and Zhiyuan Ren and Kun Yang and Chen Chen and Hailin Zhang and Yao Xiao and Xiangwang Hou},
+  title = {{Ultra-Low Latency Cloud-Fog Computing for Industrial Internet of Things}},
+  year = {n.d.},
+}
+
+
+Deployment and Resilience
+The collection of papers provided reflects a significant shift in the fields of Industrial Internet of Things (IIoT) and Machine Learning (ML). Rather than treating them as separate disciplines, these research works collectively argue for an integrated, autonomous, and operationalized ecosystem.
+The following comparative analysis identifies the key similarities and intersections among these papers to provide a unified view of the current research landscape.
+Comparative Analysis: Key Similarities and Intersections
+The Multi-Tier Architectural Model (Edge-Fog-Cloud)
+A fundamental similarity across nearly all the papers is the rejection of purely centralized cloud computing in favor of a hierarchical Edge-Fog-Cloud architecture.
+* "Edge Computing in Industrial Internet of Things" and "Applications of Distributed Machine Learning for the Internet-of-Things" provide the foundational reasoning: centralized models suffer from high latency and bandwidth costs that are untenable for industrial operations.
+* "Towards a Reference Architecture for Machine Learning Operations" and "MLOps meets Edge Computing" build upon this by defining how ML models should be "partitioned" across these layers—keeping inference at the edge for speed while performing heavy retraining in the cloud.
+The Move from "ML" to "MLOps" (Lifecycle Management)
+The papers collectively signal that the "proof-of-concept" phase of industrial ML is over. The focus has shifted to MLOps—the continuous deployment, monitoring, and retraining of models.
+* "Towards a Reference Architecture for Machine Learning Operations" identifies a "Closed-Loop Gap," where models are deployed but not monitored for performance decay (drift).
+* "MLOps for Real-Time Threat Intelligence" and "The Role of Industrial IoT and Machine Learning in Reshaping Predictive Maintenance Strategies" emphasize that in security and maintenance, a model that doesn’t adapt to changing data becomes obsolete almost immediately.
+Distributed and Privacy-Preserving Learning (Federated Learning)
+Because industrial data is often sensitive or too massive to move, there is a strong consensus on using Federated Learning (FL).
+* "Applications of Distributed Machine Learning for the Internet-of-Things" and "Cybersecurity Solutions for Industrial Internet of Things" both highlight FL as a primary solution for maintaining data sovereignty (data stays on-site) while still improving global model accuracy.
+* "A PRISMA–Based and PICOC–Framed Systematic Review..." specifically identifies the integration of Federated Learning into photovoltaic monitoring as a critical research frontier.
+Resilience and "Self-X" Capabilities
+The papers share a deep concern for the reliability of these systems in harsh or remote environments (like offshore wind farms or smart grids).
+* "Towards a Software-Defined Industrial IoT-Edge Network..." introduces "Self-X" properties: self-configuring, self-healing, and self-optimizing.
+* "Learning Spatiotemporal Failure Dependencies for Resilient Edge Computing Services" provides a technical deep-dive into this, using Bayesian networks to predict when edge servers might fail based on past patterns.
+* "Cybersecurity Solutions for Industrial Internet of Things" complements this by viewing resilience through a security lens, defending against DDoS and malware that could cause system failure.
+Application Focus: Critical Infrastructure and Energy
+Most of the papers use energy or complex manufacturing as their primary use case, suggesting these sectors are the "testing grounds" for IIoT-Edge integration.
+* Renewable Energy: Covered by Paper 1 (Photovoltaic) and Paper 8 (Wind Farms).
+* Predictive Maintenance (PdM): Specifically addressed in Paper 10 and Paper 3, which use PdM for CNC machining and industrial assets as proof-of-feasibility for their MLOps architectures.
+A Unified View of the Research
+Synthesizing these 10 papers leads to a single, unified conclusion: The future of industrial intelligence is a "Zero-Touch" autonomous lifecycle.
+In this unified view:
+1. Distributed Sensors (IIoT) collect high-granularity data.
+2. Software-Defined Networks (SDN) ensure this data moves reliably and securely.
+3. Physics-Informed and Distributed ML models process the data at the Edge to ensure sub-millisecond response times.
+4. An MLOps Orchestration Layer constantly monitors these models for "drift" and triggers Federated Retraining without human intervention.
+5. Resilience Mechanisms anticipate hardware and network failures, ensuring that the critical infrastructure (Wind, Solar, Manufacturing) remains operational even during disruptions.
+Citations in MLA Format
+Paper 1 Kawonga, Towani, Josephat Kalezhi, and Aaron Zimba. "A PRISMA–Based and PICOC–Framed Systematic Review on Physics-Informed Neural Networks, TinyML, and Edge–Cloud Collaborative Frameworks for Real–Time Photovoltaic Performance Monitoring." Research Square, 2 Apr. 2026. DOI: 10.21203/rs.3.rs-9051917/v1.
+Paper 2 Qiu, Tie, et al. "Edge Computing in Industrial Internet of Things: Architecture, Advances and Challenges." IEEE Communications Surveys & Tutorials, vol. 22, no. 4, 2020, pp. 2462-2488. DOI: 10.1109/COMST.2020.3009103.
+Paper 3 Mateo-Casalí, Miguel Ángel, Andrés Boza, and Francisco Fraile. "Towards a Reference Architecture for Machine Learning Operations." Computers, vol. 15, no. 4, 2026, p. 218. DOI: 10.3390/computers15040218.
+Paper 4 Le, Mai, et al. "Applications of Distributed Machine Learning for the Internet-of-Things: A Comprehensive Survey." IEEE Communications Surveys & Tutorials, vol. 27, no. 2, 2025, pp. 1053-1100. DOI: 10.1109/COMST.2024.3427324.
+Paper 5 Jean, Guillaume. "MLOps for Real-Time Threat Intelligence: Continuous Deployment and Monitoring of AI-based Security Models in Cloud-Edge Architectures." 14 Apr. 2025.
+Paper 6 Psaromanolakis, Nikos, et al. "MLOps meets Edge Computing: an Edge Platform with Embedded Intelligence towards 6G Systems." 2023 European Conference on Networks and Communications & 6G Summit (EuCNC/6G Summit), 2023, pp. 496-501.
+Paper 7 Aral, Atakan, and Ivona Brandic. "Learning Spatiotemporal Failure Dependencies for Resilient Edge Computing Services." IEEE Transactions on Parallel and Distributed Systems, vol. 32, no. 7, 2021, pp. 1578-1590.
+Paper 8 Mwangi, Agrippina, et al. "Towards a Software-Defined Industrial IoT-Edge Network for Next-Generation Offshore Wind Farms: State of the Art, Resilience, and Self-X Network and Service Management." Energies, vol. 17, no. 12, 2024, p. 2897. DOI: 10.3390/en17122897.
+Paper 9 Zhukabayeva, Tamara, et al. "Cybersecurity Solutions for Industrial Internet of Things–Edge Computing Integration: Challenges, Threats, and Future Directions." Sensors, vol. 25, no. 1, 2025, p. 213. DOI: 10.3390/s25010213.
+Paper 10 Bhattacharyya, Diganta, and Uttam Kumar Kundu. "The Role of Industrial IoT and Machine Learning in Reshaping Predictive Maintenance Strategies." Journal of Emerging Trends in Computer Science and Applications (JETCSA), vol. 1, no. 1, 2025, pp. 41-54.
+@article{10_21203_rs_3_rs-9051917_v1,
+  author = {Towani Kawonga and Josephat Kalezhi and Aaron Zimba},
+  title = {{A PRISMA–Based and PICOC–Framed Systematic Review on Physics-Informed Neural Networks, TinyML, and Edge–Cloud Collaborative Frameworks for Real–Time Photovoltaic Performance Monitoring}},
+  year = {2026},
+  doi = {10.21203/rs.3.rs-9051917/v1},
+}
+
+
+@article{10_1109_COMST_2020_3009103,
+  author = {Jiancheng Chi Tie Qiu and Zhaolong Ning Xiaobo Zhou and Dapeng Oliver Wu Mohammed Atiquzzaman},
+  title = {{Edge Computing in Industrial Internet of Things: Architecture, Advances and Challenges}},
+  year = {2020},
+  doi = {10.1109/COMST.2020.3009103},
+  journal = {{IEEE COMMUNICATIONS SURVEYS & TUTORIALS}}
+}
+
+
+@article{10_3390_computers15040218,
+  author = {Miguel Ángel Mateo-Casalí and Andrés Boza and Francisco Fraile},
+  title = {{Towards a Reference Architecture for Machine Learning Operations}},
+  year = {2026},
+  doi = {10.3390/computers15040218},
+  journal = {{Computers}}
+}
+
+
+@article{10_1109_COMST_2024_3427324,
+  author = {Thien Huynh-The Mai Le and Thai-Hoc Vu Tan Do-Duy and Quoc-Viet Pham Won-Joo Hwang},
+  title = {{Applications of Distributed Machine Learning for the Internet-of-Things: A Comprehensive Survey}},
+  year = {2024},
+  doi = {10.1109/COMST.2024.3427324},
+  journal = {{IEEE Communications Surveys & Tutorials}}
+}
+
+
+@article{mlops_for,
+  author = {Guillaume Jean},
+  title = {{MLOps for Real-Time Threat Intelligence: Continuous Deployment and Monitoring of AI-based Security Models in Cloud-Edge Architectures}},
+  year = {2025},
+}
+
+
+@article{mlops_meets_edge,
+  author = {Nikos Psaromanolakis and Vasileios Theodorou and Dimitris Laskaratos and Ioannis Kalogeropoulos and Maria-Eleftheria Vlontzou and Eleni Zarogianni and Georgios Samaras},
+  title = {{MLOps meets Edge Computing: an Edge Platform with Embedded Intelligence towards 6G Systems}},
+  year = {n.d.},
+}
+
+
+@article{learning_spatiote_failure,
+  author = {Ivona Brandic Atakan Aral},
+  title = {{Learning Spatiotemporal Failure Dependencies for Resilient Edge Computing Services}},
+  year = {n.d.},
+  journal = {{IEEE}}
+}
+
+
+@article{10_3390_en17122897,
+  author = {Agrippina Mwangi and Rishikesh Sahay and Elena Fumagalli and Mikkel Gryning and Madeleine Gibescu},
+  title = {{Towards a Software-Defined Industrial IoT-Edge Network for Next-Generation Offshore Wind Farms: State of the Art, Resilience, and Self-X Network and Service Management}},
+  year = {2024},
+  doi = {10.3390/en17122897},
+  journal = {{Energies}}
+}
+
+
+@article{10_3390_s25010213,
+  author = {Tamara Zhukabayeva and Lazzat Zholshiyeva and Nurdaulet Karabayev and Shafiullah Khan and Noha Alnazzawi},
+  title = {{Cybersecurity Solutions for Industrial Internet of Things–Edge Computing Integration: Challenges, Threats, and Future Directions}},
+  year = {2025},
+  doi = {10.3390/s25010213},
+  journal = {{Sensors}}
+}
+
+
+@article{the_role_of,
+  author = {Uttam Kumar Kundu Diganta Bhattacharyya},
+  title = {{The Role of Industrial IoT and Machine Learning in Reshaping Predictive Maintenance Strategies}},
+  year = {2025},
+  journal = {{Journal of Emerging Trends in Computer Science and Applications (JETCSA)}}
+}
+
+
+MLOps and the AWS Stack
+While these papers are academic in nature and do not serve as AWS technical manuals, they define the precise roles that tools like AWS Greengrass and AWS IoT Core play in the orchestration and training of distributed models.
+Here is an analysis of how federated learning orchestration moves through these architectures, drawn from the research:
+1. The Orchestration Framework (Cloud Layer)
+The papers identify the need for a centralized "Master of System Governance" to manage the lifecycle of models. In a cloud environment like AWS, this orchestration is typically handled by services like Amazon SageMaker, which aligns with the "Cloud Tier" described in "The Role of Industrial IoT and Machine Learning in Reshaping Predictive Maintenance Strategies."
+   * Model Aggregation: According to "Applications of Distributed Machine Learning for the Internet-of-Things: A Comprehensive Survey," the central server's primary role in FL is to initialize a global model, select a subset of participants, and perform weighted averaging (using algorithms like FedAvg) on the model updates received from the edge.
+   * MLOps Integration: "Towards a Reference Architecture for Machine Learning Operations" notes that "hyperscaler platforms" are often used to manage the "cold path" (asynchronous data transmission) and the computation-intensive training cycles that occur in the cloud.
+2. The Role of AWS IoT Core (Communication Protocol)
+The papers emphasize that secure, reliable communication is the backbone of federated learning. AWS IoT Core serves as the "Gateway/Communication Layer" identified in the research.
+   * Message Brokerage: "Edge Computing in Industrial Internet of Things: Architecture, Advances and Challenges" explains that IIoT systems rely on protocols like MQTT to facilitate data transfer between heterogeneous node devices. In the FL context, IoT Core acts as the broker that receives model gradients (instead of raw data) from edge devices and sends them to the cloud for aggregation.
+   * Scalability: "Towards a Software-Defined Industrial IoT-Edge Network for Next-Generation Offshore Wind Farms" highlights that software-defined networks are essential for managing large-scale data transfers with stringent Quality of Service (QoS) requirements, which is the primary function of IoT Core in an AWS ecosystem.
+3. The Role of AWS IoT Greengrass (Edge Tier)
+AWS IoT Greengrass functions as the "Edge Layer" or "Far Edge" described across several papers. It provides the local compute environment required for the "Local Training" phase of FL.
+   * On-Device Inference and Training: "MLOps meets Edge Computing: an Edge Platform with Embedded Intelligence towards 6G Systems" introduces the concept of an "EI Agent" (Edge Intelligence Agent). Greengrass acts as this agent, managing the local life cycle of the ML model, performing inference, and executing the local training on local datasets.
+   * Privacy Preservation: As highlighted in "Cybersecurity Solutions for Industrial Internet of Things–Edge Computing Integration," federated learning on edge devices like Greengrass ensures that "raw data never leaves the local device," which helps organizations meet strict privacy regulations (like GDPR) and protects proprietary industrial data.
+   * Offline Operation: "Learning Spatiotemporal Failure Dependencies for Resilient Edge Computing Services" discusses the volatility of edge networks. Greengrass allows edge nodes to continue performing inference and local learning even during network interruptions, syncing model updates back to IoT Core only when connectivity is restored.
+4. The Integrated Federated Workflow
+By synthesizing the views in "Applications of Distributed Machine Learning for the Internet-of-Things" and "A PRISMA–Based and PICOC–Framed Systematic Review... on PINNs, TinyML, and Edge–Cloud Collaborative Frameworks," we can map the move from Greengrass to IoT Core for training orchestration:
+   1. Initialization (AWS Cloud/SageMaker): A global model is created.
+   2. Deployment (IoT Core to Greengrass): The global model is pushed to edge devices via Greengrass using the secure communication channels of IoT Core.
+   3. Local Training (Greengrass): The device trains the model on its unique, local IIoT data.
+   4. Gradient Upload (Greengrass to IoT Core): Only the model updates (weights/gradients) are sent back through IoT Core.
+   5. Aggregation & Retraining (AWS Cloud): The cloud aggregates these updates to refine the global model, which is then redeployed, closing the MLOps loop.
+Things to note about the Silver bullet here
+Based on the research paper "Cloud Deployment Tradeoffs for the Analysis of Spatially-Distributed Systems of Internet-of-Things," here is the breakdown of the core problem, argument, and conclusion:
+The Elevator Pitch
+The authors investigate the technical challenges and performance tradeoffs of offloading computationally intensive runtime spatial verification from resource-constrained IoT devices to various cloud-based microservice deployment models (Virtual Machines, Containers, and FaaS).
+The Thesis
+The authors argue that while offloading spatial model checking to the cloud is necessary due to the limitations of IoT hardware, the fluctuating and unpredictable workloads inherent in spatially-distributed systems require a flexible, microservices-oriented architecture—specifically a hybrid deployment—to successfully balance cost-efficiency with the strict performance requirements of Service Level Agreements (SLAs).
+The Bottom Line
+The ultimate takeaway is that no single cloud paradigm is a "silver bullet" for IoT spatial analysis; instead, a hybrid approach—which uses preallocated resources (VMs or Containers) to handle steady baseline workloads and Function-as-a-Service (FaaS) to handle unexpected bursts—provides the most effective balance of cost, scalability, and responsiveness for real-world applications like smart city traffic management or bike-sharing systems.
+Introduction
+Literature Review
+Proposed Methodology
+Experimental Setup
+Results
+Discussion
+Conclusion

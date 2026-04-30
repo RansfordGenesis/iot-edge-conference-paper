@@ -1,0 +1,15 @@
+Group 2
+Members: Kofi Koranteng, Kyei Baafi and Appiah Boadu
+
+Topic: Edge Computing Optimization Using AWS IoT Core and Greengrass: Investigate hybrid
+cloud-edge architectures for low-latency data processing in industrial IoT applications, such as
+predictive maintenance in manufacturing, emphasizing reduced bandwidth usage, improved
+resilience, and seamless deployment of ML inference at the edge.
+
+it is a research paper we are writing to present at a conference, so that means we will review papers, bring out gaps, address those gaps with theories and test out a simulation if possible to support our claim. we've AWS credits so if we can use aws services for the simulation cool.
+
+We will be presenting ideas and create scenarios because there is no way we will go to the industry and deploy devices there, so we will give a scenario( maybe in a form of simualations with Simulink) of how the environments is going to be like with the devices deployed and present that is we take this approach and that approach we could solve this issue.
+
+We are supposed to investigate hybrid architectures deployments for edge devices that do ML related work
+in this case for industries and industrial floors
+so that means we will review papers, bring out gaps, address those gaps with theories and test out a simulation if possible to support our claim.

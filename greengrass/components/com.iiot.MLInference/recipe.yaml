@@ -1,0 +1,46 @@
+RecipeFormatVersion: '2020-01-25'
+ComponentName: com.iiot.MLInference
+ComponentVersion: '1.0.0'
+ComponentDescription: >
+  Edge ML inference for IIoT predictive maintenance.
+  Loads ONNX Random Forest model, classifies vibration/temperature sensor data,
+  routes anomaly alerts to IoT Core immediately and batches normal readings via Stream Manager.
+ComponentPublisher: IIoT-Research-Group2
+
+ComponentDependencies:
+  aws.greengrass.Nucleus:
+    VersionRequirement: '>=2.0.0'
+  aws.greengrass.StreamManager:
+    VersionRequirement: '>=2.0.0'
+
+ComponentConfiguration:
+  DefaultConfiguration:
+    BatchSize: '10'
+
+Manifests:
+  - Platform:
+      os: linux
+    Artifacts:
+      - Uri: 's3://iiot-edge-195275654331-us-east-1/greengrass-artifacts/com.iiot.MLInference/1.0.0/pdm_model.onnx'
+        Unarchive: NONE
+        Permission:
+          Read: ALL
+      - Uri: 's3://iiot-edge-195275654331-us-east-1/greengrass-artifacts/com.iiot.MLInference/1.0.0/scaler.pkl'
+        Unarchive: NONE
+        Permission:
+          Read: ALL
+      - Uri: 's3://iiot-edge-195275654331-us-east-1/greengrass-artifacts/com.iiot.MLInference/1.0.0/inference.py'
+        Unarchive: NONE
+        Permission:
+          Read: ALL
+    Lifecycle:
+      Install:
+        Script: |
+          pip3 install onnxruntime numpy scikit-learn --quiet
+          pip3 install awsiotsdk --no-deps --quiet && pip3 install awscrt --quiet || true
+      Run:
+        Script: |
+          ARTIFACTS_PATH={artifacts:path} BATCH_SIZE={configuration:/BatchSize} \
+            python3 {artifacts:path}/inference.py
+    Selections:
+      - all
