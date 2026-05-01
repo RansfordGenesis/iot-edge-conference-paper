@@ -35,9 +35,9 @@ Stream Manager exports messages from both topics to AWS IoT Core over TLS. Anoma
 
 ### D. ML Model Development
 
-The predictive maintenance model is trained on a synthetic dataset generated to replicate the statistical properties of the NASA CMAPSS FD001 turbofan engine benchmark [REF_CMAPSS]. Two hundred synthetic engine units are simulated, each running from initialization to failure over a randomized lifetime of 128–362 cycles, producing 48,755 sensor readings in total.
+The predictive maintenance model is trained on a synthetic dataset generated to replicate the statistical properties of the NASA CMAPSS FD001 turbofan engine benchmark @saxena-2008. Two hundred synthetic engine units are simulated, each running from initialization to failure over a randomized lifetime of 128–362 cycles, producing 48,755 sensor readings in total.
 
-Sensor degradation follows a validated piecewise profile calibrated to published FD001 sensor ranges and degradation slopes [REF_RAMASSO]: readings remain at baseline until RUL = 60 cycles, degrade gradually from RUL = 60 to RUL = 30, then deteriorate rapidly in the anomaly zone (RUL ≤ 30). The anomaly label threshold of RUL ≤ 30 cycles is consistent with prior CMAPSS classification literature.
+Sensor degradation follows a validated piecewise profile calibrated to published FD001 sensor ranges and degradation slopes @ramasso-2014: readings remain at baseline until RUL = 60 cycles, degrade gradually from RUL = 60 to RUL = 30, then deteriorate rapidly in the anomaly zone (RUL ≤ 30). The anomaly label threshold of RUL ≤ 30 cycles is consistent with prior CMAPSS classification literature.
 
 Fourteen informative sensor channels are used as features; the remaining seven CMAPSS sensors are excluded as they carry near-zero variance under FD001 operating conditions. A `StandardScaler` is fit on the training split and serialized for deployment.
 
@@ -69,7 +69,7 @@ Metrics captured: per-reading local inference latency (mean, median, P95, max), 
 
 The 200-reading measurement window is identical across both configurations: same sensor distribution, same anomaly injection rate, same 5 Hz publish cadence. The bandwidth comparison is made on total bytes reaching IoT Core per 200-reading window; this isolates the forwarding selection mechanism as the sole source of any observed difference. Latency comparison is made between the PUBACK round-trip time in Configuration A and the local ONNX inference time in Configuration B, reflecting the actual decision-path delay in each architecture.
 
-Evaluation metrics M1–M5 are defined in Section III of the evaluation framework [REF_METRICS]:
+Evaluation metrics M1–M5 are defined in Section III of this paper:
 
 | Metric | Configuration A Source | Configuration B Source |
 |---|---|---|
